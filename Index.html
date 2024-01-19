@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kantin Menu Kalkulator</title>
+  <style>
+    .menu-item {
+      cursor: pointer;
+      margin-bottom: 10px;
+    }
+
+    .pesanan-item {
+      cursor: pointer;
+      margin-bottom: 5px;
+      color: red;
+    }
+  </style>
+</head>
+<body>
+
+<h2>Menu Kantin</h2>
+
+<div id="menu-container">
+  <div class="menu-item" onclick="toggleMenu('Nasi Telor', 6000)">Nasi Telor - Rp 6000</div>
+  <div class="menu-item" onclick="toggleMenu('Mie Nyemek', 6000)">Mie Nyemek - Rp 6000</div>
+  <div class="menu-item" onclick="toggleMenu('Cireng', 3000)">Cireng - Rp 3000</div>
+  <div class="menu-item" onclick="toggleMenu('Samosa', 1500)">Samosa - Rp 1500</div>
+  <div class="menu-item" onclick="toggleMenu('Mendoan', 2000)">Mendoan - Rp 2000</div>
+  <div class="menu-item" onclick="toggleMenu('Es Sujel', 4000)">Es Sujel - Rp 4000</div>
+  <div class="menu-item" onclick="toggleMenu('Es Teh', 3000)">Es Teh - Rp 3000</div>
+</div>
+
+<h3>Pesanan:</h3>
+<ul id="pesanan-list"></ul>
+
+<h3>Total Harga: Rp <span id="total-harga">0</span></h3>
+
+<script>
+  let menuTersedia = [
+    { nama: 'Nasi Telor', harga: 6000 },
+    { nama: 'Mie Nyemek', harga: 6000 },
+    { nama: 'Cireng', harga: 3000 },
+    { nama: 'Samosa', harga: 1500 },
+    { nama: 'Mendoan', harga: 2000 },
+    { nama: 'Es Sujel', harga: 4000 },
+    { nama: 'Es Teh', harga: 3000 }
+  ];
+
+  let pesanan = [];
+
+  function toggleMenu(nama, harga) {
+    const existingIndex = pesanan.findIndex(menu => menu.nama === nama);
+
+    if (existingIndex !== -1) {
+      // Menu already selected
+      pesanan[existingIndex].jumlah++;
+    } else {
+      // Menu not selected, add to the order with quantity 1
+      pesanan.push({ nama, harga, jumlah: 1 });
+    }
+
+    updatePesanan();
+    updateTotalHarga();
+  }
+
+  function cancelPesanan(index) {
+    pesanan.splice(index, 1);
+    updatePesanan();
+    updateTotalHarga();
+  }
+
+  function updatePesanan() {
+    const pesananList = document.getElementById('pesanan-list');
+    pesananList.innerHTML = '';
+
+    pesanan.forEach((menu, index) => {
+      const listItem = document.createElement('li');
+      listItem.classList.add('pesanan-item');
+      listItem.textContent = `${menu.nama} - Rp ${menu.harga} x${menu.jumlah}`;
+      listItem.onclick = () => cancelPesanan(index);
+      pesananList.appendChild(listItem);
+    });
+  }
+
+  function updateTotalHarga() {
+    const totalHarga = pesanan.reduce((total, menu) => total + menu.harga * menu.jumlah, 0);
+    document.getElementById('total-harga').innerText = totalHarga;
+  }
+</script>
+
+</body>
+</html>
